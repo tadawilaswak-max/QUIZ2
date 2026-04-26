@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار بايثون - Quiz N°02</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      border-radius: 20px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    header img {
+      height: 80px;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.3s ease;
+    }
+
+    header img:hover {
+      transform: scale(1.05);
+    }
+
+    header h2 {
+      flex: 1;
+      text-align: center;
+      font-size: 1.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-container {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .form-title {
+      font-size: 1.8rem;
+      color: #2a5298;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #2a5298;
+      font-size: 1rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #e74c3c;
+      background: #fdf0ef;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .progress-text {
+      text-align: center;
+      color: #666;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .progress-bar {
+      background: #e0e0e0;
+      height: 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .progress-bar div {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.5s ease;
+      border-radius: 10px;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .question-number, .question-level {
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .question-number {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .question-level {
+      background: #f3e5f5;
+      color: #7b1fa2;
+    }
+
+    .question-title {
+      margin-bottom: 25px;
+    }
+
+    .question-text-ar {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-right: 4px solid #667eea;
+    }
+
+    .question-code {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 10px;
+      font-family: 'Courier New', 'Consolas', monospace;
+      font-size: 1rem;
+      overflow-x: auto;
+      direction: ltr;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .option-item:hover {
+      border-color: #667eea;
+      background: #f8f9ff;
+      transform: translateX(-5px);
+    }
+
+    .option-item.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #f8f9ff, #fff);
+      box-shadow: 0 2px 8px rgba(102,126,234,0.2);
+    }
+
+    .option-item input[type="radio"] {
+      margin-left: 15px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    .option-label {
+      min-width: 35px;
+      height: 35px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      margin-left: 15px;
+    }
+
+    .option-text {
+      flex: 1;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .code-inline {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .result-box {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .score-value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #667eea;
+      margin: 20px 0;
+    }
+
+    .status-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      header h2 {
+        font-size: 1rem;
+      }
+
+      header img {
+        height: 50px;
+      }
+
+      .question-text-ar {
+        font-size: 1rem;
+      }
+
+      .question-text-ar,
+      .question-code {
+       white-space: pre-wrap;
+      }
+
+      .question-code {
+        font-size: 0.85rem;
+      }
+
+      .btn {
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/logo_faculte.png" alt="شعار الكلية" onerror="this.style.display='none'">
+    <h2>
+      كلية العلوم الاقتصادية والتجارية وعلوم التسيير<br>
+      قسم الاقتصاد<br>
+      السنة الأولى اقتصاد الصحة
+    </h2>
+    <img src="images/logo_departement.png" alt="شعار القسم" onerror="this.style.display='none'">
+  </header>
+
+  <div class="container" id="start-page">
+    <div class="form-container">
+      <div class="form-title"> اختبار بايثون - Quiz N°02</div>
+      <div class="note">
+         هذا الاختبار يحتوي على <strong>50 سؤالاً</strong> | الوقت المتاح: <strong>75 دقيقة</strong><br>
+         كل سؤال له إجابة واحدة صحيحة | يمكنك التنقل بين الأسئلة<br>
+         سيتم حفظ النتيجة تلقائياً في Google Sheets عند الانتهاء
+      </div>
+
+      <div class="form-group">
+        <label>الاسم:</label>
+        <input type="text" id="name" placeholder="أدخل اسمك" required>
+      </div>
+
+      <div class="form-group">
+        <label>اللقب:</label>
+        <input type="text" id="surname" placeholder="أدخل لقبك" required>
+      </div>
+
+      <div class="form-group">
+        <label>رقم التسجيل:</label>
+        <input type="text" id="regNumber" placeholder="أدخل رقم التسجيل" required>
+      </div>
+
+      <div class="form-group">
+        <label>البريد الإلكتروني:</label>
+        <input type="email" id="email" placeholder="example@univ.dz" required>
+      </div>
+
+      <div style="text-align: center;">
+        <button class="btn" onclick="startExam()"> ابدأ الكويز</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container hidden" id="question-page">
+    <div class="timer" id="timer"> الوقت المتبقي: 0</div>
+    <div class="progress-text" id="progress-text">السؤال 1 / 50</div>
+    <div class="progress-bar"><div id="progress"></div></div>
+
+    <div class="question-card">
+      <div class="question-meta">
+        <span class="question-number" id="question-number-badge">الأسئلة</span>
+        <span class="question-level" id="question-level-badge">المستوى: سهل</span>
+      </div>
+
+      <div class="question-title">
+        <div id="question-title"></div>
+      </div>
+
+      <div class="options" id="options-container"></div>
+    </div>
+
+    <div class="navigation-buttons">
+      <button class="btn" onclick="previousQuestion()">▶ السابق</button>
+      <button class="btn" id="next-btn" onclick="nextQuestion()">التالي◀ </button>
+      <button class="btn hidden" id="finish-btn" onclick="endExam()"> إنهاء الاختبار</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="result-page">
+    <div class="result-box">
+      <h1> النتيجة النهائية</h1>
+      <p id="student-summary" style="font-size: 1.1rem; margin: 20px 0;"></p>
+      <div class="score-value" id="score">0/0</div>
+      <p id="percentage" style="font-size: 1.2rem;"></p>
+      <p id="duration-text" style="color: #666;"></p>
+      <button class="btn" id="save-btn" onclick="saveAnswersToGoogleSheet()"> حفظ النتيجة في Google Sheet</button>
+      <div id="save-status" class="status-box"> لم يتم الحفظ بعد.</div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMAezQxuesch0KBy1XaUvs2xSYyqJ-KWSadLhBu-Cp9HrzqtyZpCShm-5nA3sR1pd-jw/exec';
+
+    const questions = [
+  { q_ar: "ما وظيفة الدالة التالية؟", q_code: "print()", options: ["إدخال", "عرض", "حذف", "تحويل"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'python'.upper()", options: ["PYTHON", "python", "Error", "Py"], answer: 0 },
+  { q_ar: "كيف نكتب نصًا في Python؟", q_code: "", options: ["[]", "{}", "''", "()"], answer: 2 },
+  { q_ar: "ما ناتج التعبير المنطقي التالي؟", q_code: "5 > 3 and 2 < 1", options: ["True", "False", "Error", "None"], answer: 1 },
+  { q_ar: "ماذا تعني البنية التالية؟", q_code: "[]", options: ["قائمة فارغة", "قاموس", "نص", "رقم"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'python'.find('t')", options: ["1", "2", "3", "4"], answer: 2 },
+  { q_ar: "ما القيمة المرجعة في الحالة التالية؟", q_code: "d.get('y')", options: ["Error", "None", "0", "False"], answer: 1 },
+  { q_ar: "ما ناتج الكود التالي؟", q_code: "d = {'x':10}; d['x'] = 20", options: ["10", "20", "error", "None"], answer: 1 },
+  { q_ar: "ما الذي يحدث بعد تنفيذ الكود التالي؟", q_code: "del d['x']", options: ["حذف المفتاح", "طباعة", "نسخ", "لا شيء"], answer: 0 },
+  { q_ar: "ما نوع البنية التالية؟", q_code: "['a','b']", options: ["dict", "list", "tuple", "str"], answer: 1 },
+  { q_ar: "هل البنية التالية قابلة للتغيير؟", q_code: "list", options: ["نعم", "لا", "أحيانًا", "لا أعلم"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "len('abc')", options: ["2", "3", "4", "1"], answer: 1 },
+  { q_ar: "على ماذا يعتمد النوع التالي؟", q_code: "dict", options: ["ترتيب", "أرقام", "مفتاح-قيمة", "نص"], answer: 2 },
+  { q_ar: "في ماذا تُستخدم الكلمة المفتاحية التالية؟", q_code: "def", options: ["متغير", "دالة", "قائمة", "شرط"], answer: 1 },
+  { q_ar: "ماذا تعني البنية التالية؟", q_code: "{}", options: ["قائمة", "قاموس", "مجموعة", "نص"], answer: 1 },
+  { q_ar: "ما ناتج الكود التالي؟", q_code: "L = [1,2]; L.append(3)", options: ["[1,2]", "[1,2,3]", "error", "[3]"], answer: 1 },
+  { q_ar: "ما القيمة المرجعة من الكود التالي؟", q_code: "L = [1,2,3]; L.pop()", options: ["1", "2", "3", "error"], answer: 2 },
+  { q_ar: "ما وظيفة الدالة التالية؟", q_code: "input()", options: ["عرض", "إدخال", "حذف", "حساب"], answer: 1 },
+  { q_ar: "ما نوع القيمة التي تعيدها الدالة التالية؟", q_code: "input()", options: ["int", "float", "str", "bool"], answer: 2 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "' hello '.strip()", options: ["hello", " hello", "hello ", " error"], answer: 0 },
+  { q_ar: "ماذا يتحقق التعبير التالي؟", q_code: "x in [1,2,3]", options: ["الترتيب", "الوجود", "النوع", "الطول"], answer: 1 },
+  { q_ar: "كيف نصل إلى القيمة 1 في القاموس التالي؟", q_code: "d = {'a':1}", options: ["d(1)", "d[a]", "d['a']", "d.key"], answer: 2 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "len({'a':1,'b':2})", options: ["1", "2", "3", "0"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'PYTHON'.lower()", options: ["python", "PYTHON", "Error", "p"], answer: 0 },
+  { q_ar: "ما ناتج الكود التالي؟", q_code: "def f():\n    return 5", options: ["5", "None", "Error", "0"], answer: 0 },
+  { q_ar: "ما فائدة الكلمة التالية؟", q_code: "return", options: ["طباعة", "إرجاع", "حذف", "إيقاف"], answer: 1 },
+  { q_ar: "ما الفرق بين التعليمتين التاليتين؟", q_code: "print / return", options: ["لا فرق", "print يعرض و return يرجع", "return يعرض", "print يحذف"], answer: 1 },
+  { q_ar: "ما ناتج التعبير المنطقي التالي؟", q_code: "not True", options: ["True", "False", "1", "0"], answer: 1 },
+  { q_ar: "ما نوع القيمة التي يخزنها هذا التعبير؟", q_code: "input('x')", options: ["عدد", "نص", "bool", "list"], answer: 1 },
+  { q_ar: "ما فائدة التعبير التالي؟", q_code: "float(input())", options: ["تحويل نص إلى عدد", "حذف", "طباعة", "جمع"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'a' * 3", options: ["aaa", "a3", "error", "a a a"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'-'.join(['a','b'])", options: ["a-b", "ab", "a,b", "error"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'banana'.count('a')", options: ["2", "3", "4", "1"], answer: 1 },
+  { q_ar: "ما ناتج الكود التالي؟", q_code: "L = [1,2,3]; L[0] = 5", options: ["[1,2,3]", "[5,2,3]", "error", "[1,5,3]"], answer: 1 },
+  { q_ar: "بماذا يتميز النوع التالي؟", q_code: "tuple", options: ["سريع فقط", "غير قابل للتغيير", "قابل للتعديل", "فارغ"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'hello'[1]", options: ["h", "e", "l", "o"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "len([1,2,3,4])", options: ["3", "4", "5", "2"], answer: 1 },
+  { q_ar: "ما معنى التعليمة التالية داخل الحلقات؟", q_code: "continue", options: ["خروج", "تخطي التكرار الحالي", "إيقاف", "تكرار"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'a,b,c'.split(',')", options: [["a","b","c"], "abc", "error", "a b c"], answer: 0 },
+  { q_ar: "ماذا تمثل البنية التالية؟", q_code: "while x < 5:", options: ["حلقة تكرار", "شرط", "دالة", "قائمة"], answer: 0 },
+  { q_ar: "في ماذا تُستخدم العبارات التالية؟", q_code: "if / elif / else", options: ["التكرار", "الشرط", "الدوال", "المتغيرات"], answer: 1 },
+  { q_ar: "ما ناتج الكود التالي عند الاستدعاء؟", q_code: "def f(x):\n    return x * 2", options: ["6", "3", "2", "Error"], answer: 0 },
+  { q_ar: "ما الذي يظهر عند تنفيذ الكود التالي؟", q_code: "def f():\n    print(5)", options: ["5", "None", "Error", "0"], answer: 0 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'a' + 'b'", options: ["ab", "a b", "error", "a+b"], answer: 0 },
+  { q_ar: "ما ناتج استدعاء الدالة التالية؟", q_code: "def f(x,y):\n    return x+y\n\nf(2,3)", options: ["5", "6", "23", "Error"], answer: 0 },
+  { q_ar: "ماذا يحدث إذا لم نضع التعليمة التالية داخل الدالة؟", q_code: "return", options: ["0", "None", "Error", "False"], answer: 1 },
+  { q_ar: "ما ناتج التعبير التالي؟", q_code: "'hello'[1:4]", options: ["ell", "hel", "llo", "heo"], answer: 0 },
+  { q_ar: "ما ناتج الكود التالي؟", q_code: "for i in range(3):\n    print(i)", options: ["0 1 2", "1 2 3", "0 1 2 3", "خطأ"], answer: 0 },
+  { q_ar: "ما معنى التعليمة التالية داخل الحلقات؟", q_code: "break", options: ["استمرار", "خروج", "تخطي", "تكرار"], answer: 1 },
+  { q_ar: "ما ناتج التعبير المنطقي التالي؟", q_code: "True and False", options: ["True", "False", "1", "0"], answer: 1 },
+    
+];
+
+// دالة مساعدة لدمج النص العربي والكود
+function formatQuestionText(question) {
+  let fullText = question.q_ar;
+  if (question.q_code && question.q_code.trim() !== "") {
+    fullText += `\n\n${question.q_code}`;
+  }
+  return fullText;
+}
+
+// مثال للاستخدام
+console.log(formatQuestionText(questions[0]));
+
+    let currentQuestion = 0;
+    let answers = new Array(questions.length).fill(null);
+    let timer = null;
+    let totalQuestions = questions.length;
+    let totalTime = totalQuestions * 90;
+    let remainingTime = totalTime;
+    let score = 0;
+    let examFinished = false;
+
+    window.addEventListener("DOMContentLoaded", function () {
+      const params = new URLSearchParams(window.location.search);
+      const regNumberFromUrl = params.get("regNumber");
+      const regInput = document.getElementById("regNumber");
+      if (regNumberFromUrl && regInput) {
+        regInput.value = regNumberFromUrl;
+        regInput.readOnly = true;
+      }
+    });
+
+    function validateForm() {
+      const inputs = document.querySelectorAll('#start-page input');
+      for (let input of inputs) {
+        if (!input.value.trim()) {
+          alert(' يرجى ملء جميع الحقول');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function startExam() {
+      if (!validateForm()) return;
+      document.getElementById('start-page').classList.add('hidden');
+      document.getElementById('question-page').classList.remove('hidden');
+      renderQuestion();
+      startTimer();
+    }
+
+    function startTimer() {
+      updateTimerText();
+      timer = setInterval(() => {
+        if (!examFinished) {
+          remainingTime--;
+          updateTimerText();
+          if (remainingTime <= 0) {
+            endExam(true);
+          }
+        }
+      }, 1000);
+    }
+
+    function updateTimerText() {
+      document.getElementById('timer').innerHTML = ` الوقت المتبقي: ${formatTime(remainingTime)}`;
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes} دقيقة و ${secs} ثانية`;
+    }
+
+    function getQuestionLevel(index) {
+      if (index < 10) return "📘";
+      if (index < 30) return "📙";
+      return "📗";
+    }
+
+    function getOptionLetter(index) {
+      const letters = ["أ", "ب", "ج", "د", "هـ", "و", "ز", "ح"];
+      return letters[index] || String(index + 1);
+    }
+
+    function escapeHtml(text) {
+      if (text === undefined || text === null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    function formatCodeInText(text) {
+      let formatted = escapeHtml(String(text));
+      const codePatterns = [
+        /print\(\)/g, /input\(\)/g, /len\(/g, /range\(/g,
+        /append\(/g, /pop\(\)/g, /split\(/g, /join\(/g,
+        /upper\(\)/g, /lower\(\)/g, /strip\(\)/g, /find\(/g,
+        /count\(/g, /return/g, /def /g, /for /g, /while /g,
+        /if /g, /else/g, /elif/g, /True/g, /False/g,
+        /and /g, /or /g, /not /g, /in /g, /is /g
+      ];
+      codePatterns.forEach(pattern => {
+        formatted = formatted.replace(pattern, match => `<span class="code-inline">${match}</span>`);
+      });
+      return formatted;
+    }
+
+    function formatQuestionTitle(qText, questionNumber) {
+  const text = String(qText).trim();
+  
+  // إذا كان السؤال من النوع الجديد (يحتوي على q_ar و q_code)
+  if (arguments[0] && typeof arguments[0] === 'object') {
+    const question = arguments[0];
+    let html = `<div class="question-number">السؤال ${questionNumber}</div>`;
+    
+    if (question.q_ar) {
+      html += `<div class="question-text-ar">${escapeHtml(question.q_ar)}</div>`;
+    }
+    
+    if (question.q_code && question.q_code.trim() !== "") {
+      let codeHtml = question.q_code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\n/g, '<br>')
+        .replace(/  /g, '&nbsp;&nbsp;');
+      
+      html += `<div class="question-code">${codeHtml}</div>`;
+    }
+    
+    return html;
+  }
+  
+  // الكود الأصلي للأسئلة القديمة
+  // ... (احتفظ بالكود الأصلي هنا)
+}
+
+    function bindOptionSelectionStyle() {
+      const labels = document.querySelectorAll('.option-item');
+      labels.forEach(label => {
+        const radio = label.querySelector('input[type="radio"]');
+        if (radio && radio.checked) {
+          label.classList.add('selected');
+        } else {
+          label.classList.remove('selected');
+        }
+        label.removeEventListener('click', handleOptionClick);
+        label.addEventListener('click', handleOptionClick);
+      });
+    }
+
+    function handleOptionClick(e) {
+      const label = e.currentTarget;
+      const radio = label.querySelector('input[type="radio"]');
+      if (radio && !radio.checked) {
+        document.querySelectorAll('.option-item').forEach(item => item.classList.remove('selected'));
+        label.classList.add('selected');
+        radio.checked = true;
+        saveCurrentAnswer();
+      }
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      const level = getQuestionLevel(currentQuestion);
+
+      document.getElementById('question-title').innerHTML = formatQuestionTitle(q, currentQuestion + 1);
+      document.getElementById('question-level-badge').innerHTML = level;
+      document.getElementById('progress-text').innerHTML = ` السؤال ${currentQuestion + 1} من ${totalQuestions}`;
+      document.getElementById('progress').style.width = `${((currentQuestion + 1) / totalQuestions) * 100}%`;
+
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((option, index) => {
+        const label = document.createElement('label');
+        label.className = 'option-item';
+        const checked = answers[currentQuestion] === index ? 'checked' : '';
+        
+        let optionText = '';
+        if (Array.isArray(option)) {
+          optionText = `<span class="code-inline">${escapeHtml(JSON.stringify(option))}</span>`;
+        } else {
+          optionText = formatCodeInText(option);
+        }
+
+        label.innerHTML = `
+          <input type="radio" name="currentAnswer" value="${index}" ${checked}>
+          <span class="option-label">${getOptionLetter(index)}</span>
+          <span class="option-text">${optionText}</span>
+        `;
+
+        if (answers[currentQuestion] === index) {
+          label.classList.add('selected');
+        }
+
+        optionsContainer.appendChild(label);
+      });
+
+      bindOptionSelectionStyle();
+      
+      const finishBtn = document.getElementById('finish-btn');
+      const nextBtn = document.getElementById('next-btn');
+      
+      if (currentQuestion === totalQuestions - 1) {
+        finishBtn.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+      } else {
+        finishBtn.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
+      }
+    }
+
+    function saveCurrentAnswer() {
+      const selected = document.querySelector('input[name="currentAnswer"]:checked');
+      if (selected) {
+        answers[currentQuestion] = Number(selected.value);
+      }
+    }
+
+    function nextQuestion() {
+      saveCurrentAnswer();
+      if (currentQuestion < totalQuestions - 1) {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    function previousQuestion() {
+      saveCurrentAnswer();
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function endExam(fromTimer = false) {
+      if (examFinished) return;
+      saveCurrentAnswer();
+      examFinished = true;
+      clearInterval(timer);
+
+      score = answers.reduce((total, answer, index) => {
+        return total + (answer === questions[index].answer ? 1 : 0);
+      }, 0);
+
+      document.getElementById('question-page').classList.add('hidden');
+      document.getElementById('result-page').classList.remove('hidden');
+
+      const fullName = `${document.getElementById('name').value.trim()} ${document.getElementById('surname').value.trim()}`;
+      const durationTaken = totalTime - Math.max(remainingTime, 0);
+      const percentage = Math.round((score / totalQuestions) * 100);
+      let gradeText = '';
+      if (percentage >= 80) gradeText = ' ممتاز';
+      else if (percentage >= 60) gradeText = ' جيد جداً';
+      else if (percentage >= 50) gradeText = ' مقبول';
+      else gradeText = ' يحتاج إلى مراجعة';
+
+      document.getElementById('student-summary').innerHTML = 
+        ` الطالب: ${fullName}<br> رقم التسجيل: ${document.getElementById('regNumber').value.trim()}<br> البريد: ${document.getElementById('email').value.trim()}`;
+      document.getElementById('score').innerHTML = `${score}/${totalQuestions}<br><span style="font-size: 1rem;">${gradeText}</span>`;
+      document.getElementById('percentage').innerHTML = ` النسبة: ${percentage}% ${fromTimer ? ' | انتهى الوقت المحدد.' : ''}`;
+      document.getElementById('duration-text').innerHTML = ` المدة المستغرقة: ${formatTime(durationTaken)}`;
+    }
+
+    function buildPayload() {
+      const durationTaken = totalTime - Math.max(remainingTime, 0);
+      return {
+        name: document.getElementById('name').value.trim(),
+        surname: document.getElementById('surname').value.trim(),
+        regNumber: document.getElementById('regNumber').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        score: score,
+        totalQuestions: totalQuestions,
+        percentage: Math.round((score / totalQuestions) * 100),
+        duration: durationTaken,
+        answers: JSON.stringify(
+          questions.map((q, i) => ({
+            question: q.q,
+            selectedIndex: answers[i],
+            selectedAnswer: answers[i] !== null ? q.options[answers[i]] : '',
+            correctAnswer: q.options[q.answer],
+            isCorrect: answers[i] === q.answer
+          }))
+        )
+      };
+    }
+
+    function saveAnswersToGoogleSheet() {
+      const saveBtn = document.getElementById('save-btn');
+      const saveStatus = document.getElementById('save-status');
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = ' جاري الحفظ...';
+      saveStatus.innerHTML = ' جاري حفظ النتيجة في Google Sheet...';
+
+      const payload = buildPayload();
+      const formData = new FormData();
+      Object.keys(payload).forEach(key => formData.append(key, payload[key]));
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          saveStatus.innerHTML = ' تم حفظ النتيجة بنجاح في Google Sheet!';
+          saveBtn.innerHTML = '✓ تم الحفظ';
+        } else {
+          saveStatus.innerHTML = ' حدث خطأ أثناء الحفظ: ' + (data.message || 'خطأ غير معروف');
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = ' إعادة المحاولة';
+        }
+      })
+      .catch(error => {
+        saveStatus.innerHTML = ' تعذر الاتصال بالخادم: ' + error.message;
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = ' إعادة المحاولة';
+      });
+    }
+  </script>
+</body>
+</html>
